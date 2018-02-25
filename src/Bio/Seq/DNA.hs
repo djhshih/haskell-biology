@@ -34,6 +34,7 @@ slice (Seq xs) (start, end) = Seq $ S.take (e - s) $ snd $ S.splitAt s xs
     s = fromIntegral start
     e = fromIntegral end
 
+--
 
 alphabet :: [Char]
 alphabet = "ACGT"
@@ -129,4 +130,9 @@ codonToAA c = case c of
 
 toAA :: Seq -> AA.Seq
 toAA (Seq xs) = AA.Seq $ S.pack $ map codonToAA (S.chunksOf 3 xs)
+
+-- Translate with a non-standard genetic code.
+toAAWith :: M.Map S.String Char -> Seq -> AA.Seq
+toAAWith m (Seq xs) = AA.Seq $ S.pack $
+    map (\codon -> maybe '?' id (M.lookup codon m)) (S.chunksOf 3 xs)
 
